@@ -1,12 +1,23 @@
+# Librerias
 import os
 import pandas as pd
 import time
+
+# Variables globales
+folder_path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/SEMANA_{}'
+week_number = 3
+final_path = folder_path.format(week_number)
+acugen_path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/ACUGEN_SEM_{}/acumulado_sueldos.csv'
+acugen_final = acugen_path.format(week_number)
+acugen_excel = "/home/xeroxv23/Documents/acumulados_sueldos_semanales/ACUGEN_SEM_{}/nuevo_acugen.xlsx"
+acugen_excel_final = acugen_excel.format(week_number)
+
 
 # contador de tiempo
 start_time = time.time()
 
 # especifica la ruta de la carpeta
-path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/destajos_ejemplo'
+path = final_path
 
 # obtiene una lista de todos los archivos xlsm en la carpeta
 files = [f for f in os.listdir(path) if f.endswith('.xlsm')]
@@ -38,14 +49,14 @@ df_final = df_final.sort_values(by=['CODIGO', 'CLAVE_OBRA'],
 
 
 # guarda el dataframe final en un archivo csv
-df_final.to_csv('/home/xeroxv23/Documents/acumulados_sueldos_semanales/archivos_csv/acumulado_sueldos.csv', index=False)
+df_final.to_csv(acugen_final, index=False)
 print('CSV CREADO!')
 
 # dar formato de moneda a la columna 'SALARIO'
 df_final.style.format({'SALARIO': '${:,.2f}'})
 
 # Crear un objeto de escritura de Excel
-writer = pd.ExcelWriter("/home/xeroxv23/Documents/acumulados_sueldos_semanales/archivos_csv/nuevo_acugen.xlsx", engine='xlsxwriter')
+writer = pd.ExcelWriter(acugen_excel_final, engine='xlsxwriter')
 
 # Escribir el dataframe en la primera hoja
 df_final.to_excel(writer, sheet_name='SALARIO_POR_OBRA', index=False)
