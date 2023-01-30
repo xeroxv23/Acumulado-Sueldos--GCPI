@@ -7,7 +7,7 @@ import openpyxl
 # Variables globales ( LAS DIRECCIONES DE LAS CARPETAS SERAN VERIFICADAS POR EL NUMERO DE SEMANA ADMINISTRATIVA, asi solo nos preocupamos por cambiar el valor de "week_number")
 
 folder_path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/SEMANA_{}'
-week_number = 3
+week_number = 4
 final_path = folder_path.format(week_number)
 acugen_path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/ACUGEN_SEM_{}/acumulado_sueldos.csv'
 acugen_final = acugen_path.format(week_number)
@@ -16,12 +16,6 @@ acugen_excel_final = acugen_excel.format(week_number)
 
 # contador de tiempo
 start_time = time.time()
-
-# COMPROBACION SEMANA
-df_cell = pd.read_excel('//home/xeroxv23/Documents/acumulados_sueldos_semanales/SEMANA_3/C-300 LOTE D y E OLMOS.xlsm',sheet_name=0, engine='openpyxl', header=None, skiprows=9, nrows=1, usecols=[2-1])
-df_cell.columns = ['C10']
-value = df_cell.iat[0, 0]
-
 
 # especifica la ruta de la carpeta
 path = final_path
@@ -32,22 +26,25 @@ files = [f for f in os.listdir(path) if f.endswith('.xlsm')]
 # inicializa una lista vacía para almacenar los dataframes individuales
 df_list = []
 
-# itera a través de cada archivo xlsm y lee los datos en un dataframe
+# itera a través de cada archivo xlsm y lee los datos en un dataframe solo si la celda del archivo de excel coincide la celda B10 con el numero de semana
 for file in files:
-    df_comprobacion = pd.read_excel(os.path.join(path, file),sheet_name=0, engine='openpyxl', header=None, skiprows=9, nrows=1, usecols=[2-1])
-    df_comprobacion.columns = ['C10']
-    value1 = df_comprobacion.iat[0, 0]
-    print(value1)
+    df_celda_semana = pd.read_excel(os.path.join(path, file),sheet_name=0, engine='openpyxl', header=None, skiprows=9, nrows=1, usecols=[2-1])
+    df_celda_semana.columns = ['C10']
+    celda_no_semana = df_celda_semana.iat[0, 0]
+    print(celda_no_semana)
 
-    if value1 == week_number:
+# Si el numero de semana no coincide, ignorara los archivos 
+    if celda_no_semana == week_number:
         df = pd.read_excel(os.path.join(path, file),sheet_name=0, engine='openpyxl', usecols=[0,2,17], header=None)
+        # Eliminaremos las celdas vacias de las columnas con indice 0, 2 y 17
         df = df.dropna()
+        # Renombramos las columnas seleccionadas
         df = df.rename(columns={0: 'CODIGO', 2: 'NOMBRE', 17: 'SALARIO'})
-
+        # La columna de codigo la pasaremos a numeros enteros y se ignoraran los strings y otros valores
         df = df[pd.to_numeric(df['CODIGO'], errors='coerce').notnull()]
-
+        # Para definir el nombre de la clave de obra, tomaremos el nombre del archivo hasta la aparicion del primer espacio (" ")
         df['CLAVE_OBRA'] = os.path.basename(file).split(' ')[0]
-
+        # En cada iteracion de los archivos de excel, se crea un dataframe nuevo que se agregara a la lista de dataframes (df_list)
         df_list.append(df)
 
 # combina todos los dataframes individuales en un único dataframe
