@@ -6,13 +6,13 @@ import openpyxl
 
 # Variables globales ( LAS DIRECCIONES DE LAS CARPETAS SERAN VERIFICADAS POR EL NUMERO DE SEMANA ADMINISTRATIVA, asi solo nos preocupamos por cambiar el valor de "week_number")
 
-folder_path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/SEMANA_{}'
+folder_path = '/home/xeroxv23/Documents/Proyectos GCPI/acumulados_sueldos_semanales/SEMANA_{}'
 week_number = 4
 final_path = folder_path.format(week_number)
-acugen_path = '/home/xeroxv23/Documents/acumulados_sueldos_semanales/ACUGEN_SEM_{}/acumulado_sueldos.csv'
-acugen_final = acugen_path.format(week_number)
-acugen_excel = "/home/xeroxv23/Documents/acumulados_sueldos_semanales/ACUGEN_SEM_{}/nuevo_acugen.xlsx"
-acugen_excel_final = acugen_excel.format(week_number)
+acugen_path = '/home/xeroxv23/Documents/Proyectos GCPI/acumulados_sueldos_semanales/ACUGEN_SEM_{}/acumulado_sueldos_sem{}.csv'
+acugen_final = acugen_path.format(week_number, week_number)
+acugen_excel = "/home/xeroxv23/Documents/Proyectos GCPI/acumulados_sueldos_semanales/ACUGEN_SEM_{}/nuevo_acugen_sem{}.xlsx"
+acugen_excel_final = acugen_excel.format(week_number, week_number)
 
 # contador de tiempo
 start_time = time.time()
